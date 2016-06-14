@@ -416,6 +416,8 @@ func (c *client) internalConnLost(err error) {
 	// forceDisconnect can cause incoming/outgoing/alllogic to end with
 	// error from closing the socket but state will be "disconnected"
 	if c.IsConnected() {
+		c.pingTimer.Stop()
+		c.pingRespTimer.Stop()
 		c.closeStop()
 		c.conn.Close()
 		c.workers.Wait()
