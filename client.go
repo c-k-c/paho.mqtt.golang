@@ -272,6 +272,7 @@ func (c *client) reconnect() {
 	var rc byte = 1
 	var sleep uint = 1
 	var err error
+	var conn net.Conn
 
 	for rc != 0 {
 		cm := newConnectMsgFromOptions(&c.options)
@@ -279,8 +280,12 @@ func (c *client) reconnect() {
 		for _, broker := range c.options.Servers {
 		CONN:
 			DEBUG.Println(CLI, "about to write new connect msg")
-			c.conn, err = openConnection(broker, &c.options.TLSConfig, c.options.ConnectTimeout)
+			//ckc - fix npe. this isn't the best fix but it does fix the npe, more work to be done
+			//there is a possibility of a race causing two incoming loops to use
+			//this conn object briefly after a successful reconnect which still needs to be fixed
+			conn, err = openConnection(broker, &c.options.TLSConfig, c.options.ConnectTimeout)
 			if err == nil {
+				c.conn = conn
 				DEBUG.Println(CLI, "socket connected to broker")
 				switch c.options.ProtocolVersion {
 				case 3:
