@@ -30,14 +30,16 @@ func keepalive(c *client) {
 			c.workers.Done()
 			return
 		case <-c.pingTimer.C:
-			DEBUG.Println(PNG, "keepalive sending ping")
+			INFO.Printf("keepalive sending ping. clientId = %v", c.options.ClientID)
+			//DEBUG.Println(PNG, "keepalive sending ping")
 			ping := packets.NewControlPacket(packets.Pingreq).(*packets.PingreqPacket)
 			//We don't want to wait behind large messages being sent, the Write call
 			//will block until it it able to send the packet.
 			ping.Write(c.conn)
 			c.pingRespTimer.Reset(c.options.PingTimeout)
 		case <-c.pingResp:
-			DEBUG.Println(NET, "resetting ping timers")
+			INFO.Printf("received ping response, reseting ping timers. clientId = %v", c.options.ClientID)
+			//DEBUG.Println(NET, "resetting ping timers")
 			c.pingRespTimer.Stop()
 			c.pingTimer.Reset(c.options.KeepAlive)
 		case <-c.pingRespTimer.C:

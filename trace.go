@@ -26,6 +26,7 @@ var (
 	CRITICAL *log.Logger
 	WARN     *log.Logger
 	DEBUG    *log.Logger
+	INFO     *log.Logger
 )
 
 func init() {
@@ -33,4 +34,5 @@ func init() {
 	CRITICAL = log.New(ioutil.Discard, "", 0)
 	WARN = log.New(ioutil.Discard, "", 0)
 	DEBUG = log.New(ioutil.Discard, "", 0)
+	INFO = log.New(ioutil.Discard, "", 0)
 }
