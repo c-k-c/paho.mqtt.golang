@@ -98,7 +98,11 @@ func newConnectMsgFromOptions(options *ClientOptions) *packets.ConnectPacket {
 		}
 	}
 
-	m.KeepaliveTimer = uint16(options.KeepAlive.Seconds())
+	keepAlive := options.KeepAlive.Seconds()
+	if keepAlive < 30*60 {
+		keepAlive = keepAlive + 60
+	}
+	m.KeepaliveTimer = uint16(keepAlive)
 
 	return m
 }
